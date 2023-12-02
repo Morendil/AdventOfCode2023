@@ -23,9 +23,17 @@ possible :: Sample -> Game -> Bool
 possible bag (_, samples) = all plausible samples
     where plausible sample = all (\(color,count) -> M.findWithDefault 0 color sample <= count) (M.toList bag)
 
+power :: Game -> Int
+power (_,samples) = product $ map maxOf ["red","green","blue"]
+    where maxOf color = maximum $ map (M.findWithDefault 0 color) samples
+
+part2 :: [Game] -> Int
+part2 = sum . map power
+
 part1 :: [Game] -> Int
 part1 = sum . map fst . filter (possible $ M.fromList [("red",12),("green",13),("blue",14)])
 
 main = do
     games <- fromJust . parseMaybe games <$> readFile "day02.txt"
     print $ part1 games
+    print $ part2 games
