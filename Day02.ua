@@ -6,6 +6,9 @@ Sample ← ≡(Lookup ⊔){"red" "green" "blue"} ¤ Split @,
 Game ← ≡(Sample ⊔) Split @; ⊔⊢⇌ Split @:
 Power ← /×/↥
 
+PartOne ← /+ +1 ⊚ ≡(Possible Game ⊔)
+PartTwo ← /+≡(Power Game ⊔)
+
 # Domain (part 1)
 ⍤ ⊃⋅∘ ≍ 1 Possible [6_3_1 1_2_2]
 ⍤ ⊃⋅∘ ≍ 0 Possible [20_8_6 6_3_1 1_2_2]
@@ -19,9 +22,9 @@ Power ← /×/↥
 # Part 1
 &fras "day02.txt"
 Split @\n
-/+ +1 ⊚ ≡(Possible Game ⊔)
+PartOne
 
 # Part 2
 &fras "day02.txt"
 Split @\n
-/+≡(Power Game ⊔)
+PartTwo
