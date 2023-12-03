@@ -29,9 +29,22 @@ retrieve sch (y,xs) = read [M.findWithDefault '.' (x,y) sch | x <- xs]
 runs :: String -> [[Int]]
 runs line = map (map snd) $ filter (any (isDigit.fst)) $ groupOn (isDigit.fst) (zip line [0..])
 
+part1 :: [String] -> Int
+part1 all = sum $ map (retrieve schematic) tagged
+    where schematic = toMap all
+          tagged = filter (isTagged schematic) (partNumbers all)
+
+part2 :: [String] -> Int
+part2 all = sum $ map ratio partPairs
+    where schematic = toMap all
+          parts = partNumbers all
+          maybeGears = M.keys $ M.filter ('*' ==) schematic
+          isNeighbor loc partNum = loc `elem` neighbors partNum
+          partsNear gear = filter (isNeighbor gear) parts
+          partPairs = filter ((2 ==). length) $ map partsNear maybeGears
+          ratio [p1,p2] = retrieve schematic p1 * retrieve schematic p2
+
 main = do
     all <- lines <$> readFile "day03.txt"
-    let schematic = toMap all
-        parts = partNumbers all
-        tagged = filter (isTagged schematic) parts
-    print $ sum $ map (retrieve schematic) tagged
+    print $ part1 all
+    print $ part2 all
