@@ -1,23 +1,27 @@
 IsAlphaNum ← ∊:⊂+@0⇡10+@A⇡26
 Split ← ⊜□≠,
 SplitOn ← ⊐⊜∘ ¬ ⌕ : ,
-Prepare ← : ⊙(↘ 1) ↙ 1 . ≡(⊡ 1 Split @: ⊔) SplitOn "\n\n"
+Directions ← ⊔:⍉ ≡(⊜□ IsAlphaNum.) SplitOn "\n" ⊔ : ⍘⊟ SplitOn "\n\n"
 
-Step ← (
-  +1=@R
-  ⊙(:⊙(:⊙(⊗ ⊡ 0). :) : ⊡ 0 .)
-  ⊂
-  ⊡ ⊙(.)
-  :
-  ⊙⊂
-)
+# On stack: <@L or @R> Directions [box "ONE"]
+# After: [box "TWO" box "ONE"] Directions
+Step ← ⊙⊂ : ⊡ ⊙(.) ⊂ ⊙(:⊙(:⊙(⊗ ⊡ 0). :) : ⊡ 0 .) +1=@R
+# On stack : "BEG" "LRLRR" Directions
+# After : Directions Path
+Path ← ∧(Step) ⊙: : ¤
+# Directions -> Table
+Table ← ≡(⇌ ; Path ⊙(∩⊔ ⍘⊟ ⊔)) ⊙(¤ □ ⊟ ∩□) : ⊙(⊢.)
+# box BEG Table -> box END (of row) Table
+StartToEnd ← ⊢ ⊡ ⊚ ≡(⇌)⌕ ⊙(..)
+# box BEG Table -> box END Table
+FollowFast ← ⍢(StartToEnd)(≠@Z ⊢ ⇌ ⊔ dump∘)
+# Table -> Start nodes
+Starts ← ⊏ ⊚ ≡(=@A ⊢ ⇌ ⊔) . ⊢ ⍉
 
 &fras "day08_sample2.txt"
-: ⍘⊟ SplitOn "\n\n"
-SplitOn "\n" ⊔
-≡(⊜□ IsAlphaNum.)
-⊔ : ⍉
-: ⊙(⊡ 0 .)
-⊙(¤ ⊟∩□)
-dump∘
-≡(1;dump∘)
+Directions
+Table
+Starts .
+⊡ 1
+StartToEnd
+StartToEnd
