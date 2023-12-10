@@ -21,7 +21,6 @@ Starts ← ⊏ ⊚ ≡(=@A ⊢ ⇌ ⊔) . ⊢ ⍉
 &fras "day08_sample2.txt"
 Directions
 Table
-Starts .
-⊡ 1
-StartToEnd
-StartToEnd
+# Starts .
+□ "22C"
+⊢ ⊡ ⊚ ≡(⇌)⌕ ⊙(..)
