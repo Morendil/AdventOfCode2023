@@ -1,6 +1,6 @@
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, isJust, fromJust)
 
 type Pos = (Int,Int)
 type Grid = M.Map Pos Char
@@ -28,15 +28,50 @@ grow grid (Just (loop, edge)) = if checks then Just (S.union loop (S.fromList go
           good (pos,allowed) = M.findWithDefault '.' pos grid `elem` allowed
           checks = all good ends
 
-findLoop :: Grid -> [Pos]
-findLoop grid = S.toList $ fst $ head $ mapMaybe tryFindLoop candidates
+flood :: Grid -> (S.Set Pos, S.Set Pos) -> (S.Set Pos, S.Set Pos)
+flood grid (seen, edge) = (S.union seen edge, newEdge)
+    where neighbours (x,y) = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
+          goVisit (x,y) = filter (\pos -> M.findWithDefault 'x' pos grid `elem` "._") $ neighbours (x,y)
+          maybeEdge = S.fromList $ concatMap goVisit edge
+          newEdge = S.difference maybeEdge seen
+
+findLoop :: Grid -> (Grid, Maybe (S.Set Pos))
+findLoop grid = head $ filter (isJust.snd) $ map tryFindLoop candidates
     where start = head $ M.keys $ M.filter ('S'==) grid
           candidates = map (\c -> M.insert start c grid) "F7JL-|"
-          tryFindLoop oneGrid = converge (grow oneGrid) $ Just (S.empty, [start])
+          tryFindLoop oneGrid = (oneGrid, fmap fst $ converge (grow oneGrid) $ Just (S.empty, [start]))
 
 part1 :: Grid -> Int
-part1 grid = length (findLoop grid) `div` 2
+part1 grid = length loop `div` 2
+    where (_, Just loop) = findLoop grid
+
+part2 :: Grid -> Int
+part2 grid = length $ filter ('.'==) $ M.elems inside
+    where (goodGrid, Just loop) = findLoop grid
+          expanded = asMap $ double $ display $ M.restrictKeys goodGrid loop
+          outside = fst $ converge (flood expanded) (S.empty, S.singleton (0,0))
+          inside = M.withoutKeys expanded outside
 
 main = do
     grid <- asMap . lines <$> readFile "day10.txt"
     print $ part1 grid
+    print $ part2 grid
+
+
+display :: Grid -> [String]
+display scan = [ [ rep $ M.lookup (x,y) scan | x <- [-1..xMax+1]] | y <- [-1..yMax+1]]
+  where rep (Just c) = c
+        rep Nothing = '.'
+        (xMax,yMax) = (maximum $ map fst $ M.keys scan, maximum $ map snd $ M.keys scan)
+
+double :: [String] -> [String]
+double = concatMap ((\s -> s : [map mapV s]) . doubleH)
+    where doubleH = concatMap (\c -> c : [mapH c])
+          mapH 'F' = '-'
+          mapH 'L' = '-'
+          mapH '-' = '-'
+          mapH _ = '_'
+          mapV '7' = '|'
+          mapV 'F' = '|'
+          mapV '|' = '|'
+          mapV _ = '_'
