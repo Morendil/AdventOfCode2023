@@ -12,15 +12,16 @@ Path ← ∧(Step) ⊙: : ¤
 # Directions -> Table
 Table ← ≡(⇌ ; Path ⊙(∩⊔ ⍘⊟ ⊔)) ⊙(¤ □ ⊟ ∩□) : ⊙(⊢.)
 # box BEG Table -> box END (of row) Table
-StartToEnd ← ⊢ ⊡ ⊚ ≡(⇌)⌕ ⊙(..)
+StartToEnd ← : +1 ⊙(⊢⇌ ⊡ ⊗) : ⊙⊙(⊡ 0⍉..)
 # box BEG Table -> box END Table
-FollowFast ← ⍢(StartToEnd)(≠@Z ⊢ ⇌ ⊔ dump∘)
+FollowFast ← ;⍢(StartToEnd)(≠@Z ⊢ ⇌ ⊔ ⊢)
 # Table -> Start nodes
 Starts ← ⊏ ⊚ ≡(=@A ⊢ ⇌ ⊔) . ⊢ ⍉
 
 &fras "day08_sample2.txt"
 Directions
-Table
-# Starts .
-□ "22C"
-⊢ ⊡ ⊚ ≡(⇌)⌕ ⊙(..)
+¤ Table
+Starts .
+⊢
+: ¤ 0
+≡(FollowFast)
