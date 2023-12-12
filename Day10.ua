@@ -11,12 +11,26 @@ EdgeCompatible ← /×≠0≡(⊗): ⊙(≡(⊡ ⊙⊔)⊙(¤ □))
 &fras "day10_sample.txt"
 Grid
 Start .
-⊙(⊙(;) ⍜⊡ @F) .
-,,
-¤
-⊡
+# Assume the @S is:
+⊙(⍜⊡;) . ⊙⊙@F
+# Take start value
+⊡¤,,
+
+# Value -> Directions Compatibility
 ⊗ : Pipes
+⍉
 ⊃(⊡ : Compatible)(⊡ : Directions)
 ⊙(≡(+)⊙(¤))
-,
-⊙(EdgeCompatible)
+
+⊙⊙.
+# Directions Compatibility Grid -> Valid Nodes or []
+# Keep if compatible
+([]|∘) : ⊙(EdgeCompatible) ,
+
+⊡¤,,
+⊗ : Pipes
+⍉
+≡(⊃(⊡ : Compatible)(⊡ : Directions))
+⊙(≡(+)⊙(¤))
+⊙⊙.
+([]|∘) : ⊙(EdgeCompatible) ,
