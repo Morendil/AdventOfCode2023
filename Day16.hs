@@ -25,26 +25,32 @@ move grid beam@(pos, dir) = filter (onGrid.fst) $ map advance $ transform (tile 
           add (x1,y1) (x2,y2) = (x1+x2,y1+y2)
 
 transform :: Char -> Beam -> [Beam]
--- transform '/' (p,dir) = [(p,toEnum $ (fromEnum dir + 2) `mod` 4)]
--- transform '\\' (p,dir) = [(p,toEnum $ (3 - fromEnum dir) `mod` 4)]
-transform '/' (p,North) = [(p,East)]
-transform '/' (p,South) = [(p,West)]
-transform '/' (p,East) = [(p,North)]
-transform '/' (p,West) = [(p,South)]
-transform '\\' (p,North) = [(p,West)]
-transform '\\' (p,South) = [(p,East)]
-transform '\\' (p,East) = [(p,South)]
-transform '\\' (p,West) = [(p,North)]
+transform '/' (p,dir) = [(p,toEnum $ (fromEnum dir + 2) `mod` 4)]
+transform '\\' (p,dir) = [(p,toEnum $ (3 - fromEnum dir) `mod` 4)]
 transform '|' (p,dir) | dir `elem` [East, West] = [(p,North),(p,South)]
 transform '-' (p,dir) | dir `elem` [North,South] = [(p,East),(p,West)]
 transform ' ' beam = []
 transform _ beam = [beam]
 
 part1 :: Grid -> Int
-part1 contraption = length energized
-    where final = last $ takeUntil (null.snd) $ iterate (grow contraption) (S.empty, [((0,0),East)])
-          energized = nub $ map fst $ S.toList $  fst final
+part1 contraption = energize contraption ((0,0),East)
 
+part2 :: Grid -> Int
+part2 contraption = maximum $ map (energize contraption) (starts contraption)
+
+starts :: Grid -> [Beam]
+starts grid = concat [top,left,bottom,right]
+    where (xMax,yMax) = (maximum $ map fst $ M.keys grid, maximum $ map snd $ M.keys grid)
+          top = [((x,0),South) | x <- [0..xMax]]
+          bottom = [((x,yMax),North) | x <- [0..xMax]]
+          left = [((0,y),East) | y <- [0..yMax]]
+          right = [((xMax,y),West) | y <- [0..yMax]]
+
+energize :: Grid -> Beam -> Int
+energize grid start = length energized
+    where final = last $ takeUntil (null.snd) $ iterate (grow grid) (S.empty, [start])
+          energized = nub $ map fst $ S.toList $  fst final
 main = do
     contraption <- asMap . lines <$> readFile "day16.txt"
     print $ part1 contraption
+    print $ part2 contraption
