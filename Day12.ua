@@ -55,7 +55,10 @@ Arrangements ← (
   Finish
 )
 
+Expand ← ⊓(⊂: ⊙(⊔)⊐/⊂⊙(□)≡(□⊂@?)[⍥.3].)(/⊂[⍥.4])
+
 PartOne ← /+ ≡(Arrangements ∩⊔ ⍘⊟ ⍜(⊡ 1)(⍜(⊔)Numbers)Words) Lines
+PartTwo ← /+ ≡(Arrangements Expand ∩⊔ ⍘⊟ ⍜(⊡ 1)(⍜(⊔)Numbers)Words) Lines
 
 ⍤ ⊃⋅∘ ≍ 0 Case @# [Working 0 0 1]
 ⍤ ⊃⋅∘ ≍ 1 Case @? [Working 1 0 1]
@@ -89,3 +92,6 @@ PartOne ← /+ ≡(Arrangements ∩⊔ ⍘⊟ ⍜(⊡ 1)(⍜(⊔)Numbers)Words) 
 
 &fras "day12.txt"
 PartOne
+
+&fras "day12.txt"
+PartTwo
