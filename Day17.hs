@@ -33,13 +33,15 @@ display grid = [ [ rep $ M.lookup (x,y) grid | x <- [0..xMax]] | y <- [0..yMax]]
 debug :: [State] -> Grid -> M.Map Pos Char
 debug path grid = M.union (toMap path) (M.map intToDigit grid)
 
-main = do
-    city <- asMap . lines <$> readFile "day17.txt"
-    -- Start at -1 straight line distance because the starting point doesn't count…
-    let start = ((0,0),(South,-1))
+part1 :: Grid -> Int
+part1 city = fst path
+  -- Start at -1 straight line distance because the starting point doesn't count…
+  where start = ((0,0),(South,-1))
         goal = (maximum $ map fst $ M.keys city, maximum $ map snd $ M.keys city)
         bounds = goal
         dist (x1,y1) (x2,y2) = abs (x2-x1) + abs (y2-y1)
         path = fromJust $ aStar (neighbors bounds) (const (fromJust . (`M.lookup` city) . fst)) (dist goal . fst) ((==) goal . fst) start
-    print $ fst path
-    putStrLn $ unlines $ display $ debug (snd path) city
+
+main = do
+    city <- asMap . lines <$> readFile "day17_sample.txt"
+    print $ part1 city
