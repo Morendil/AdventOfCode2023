@@ -1,8 +1,9 @@
 import Data.List.Extra (chunksOf, findIndices)
-import Data.List ( transpose, tails, inits, sortOn )
+import Data.List ( transpose, tails, inits, sortOn, (\\), partition )
 import qualified Data.Map as M
 import Test.Hspec
 import Data.Ord (Down(..))
+import Control.Monad.State (State, runState, get, put)
 
 type Brick = [[Int]]
 type SupportedBy = M.Map Int [Int]
@@ -22,7 +23,7 @@ overlap2d a b = and $ zipWith overlap (take 2 a) (take 2 b)
 settle  :: [Brick] -> [Brick]
 settle = fst . settle'
 
-settle' :: [Brick] -> ([Brick], M.Map Int [Int])
+settle' :: [Brick] -> ([Brick], SupportedBy)
 settle' = go M.empty []
   where go sup settled [] = (reverse settled, sup)
         go sup settled (brick:bricks) = go (M.insert index supports sup) (settleOne:settled) bricks
@@ -33,8 +34,16 @@ settle' = go M.empty []
                 index = length settled
         dropTo z [xs,ys,[z1,z2]] = [xs,ys,[z,z+(z2-z1)]]
 
-key :: M.Map Int [Int] -> Int -> Bool
+key :: SupportedBy -> Int -> Bool
 key supports n = [n] `elem` M.elems supports
+
+-- Would be better memoized…
+chain :: SupportedBy -> Int -> Int
+chain supports n = go (M.filter (not.null) supports) [n]
+    where go supports _ | null supports = 0
+          go supports remove = if null fell then 0 else length fell + go remain (M.keys fell)
+            where supports' = M.map (\\ remove) supports
+                  (fell, remain) = M.partition null supports'
 
 part1 :: [Brick] -> Int
 part1 bricks = length $ filter (not . key supports) [0..length settled-1]
@@ -48,7 +57,7 @@ main = do
     bricks <- sortOn (minimum . \b -> b!! 2) . map (transpose . parse) . lines <$> readFile "day22.txt"
     let (settled, supports) = settle' bricks
     print $ part1 bricks
-    -- print supports
+    print $ map (chain supports) [0..length settled-1]
     -- print $ filter (key supports) [0..50]
     -- putStrLn $ unlines $ zipWith display (cycle colors) settled
     -- putStrLn $ unlines $ zipWith display (cycle colors)  $ take 113 bricks
