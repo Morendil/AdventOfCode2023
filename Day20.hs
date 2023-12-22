@@ -66,14 +66,37 @@ pressButton _ = error "Please wait until pulses are processed before pressing bu
 stabilize :: Config -> State -> State
 stabilize config state = last $ takeUntil (\(_,q,_) -> null q) $ iterate (step config) $ pressButton state
 
+stabilize' :: Config -> State -> State
+stabilize' config state = last $ takeUntil (\(_,q,_) -> null q) $ iterate (step config) $ pressButton $ forget state
+    where forget (m,q,h) = (m,q,[])
+
 part1 :: Config -> Int
 part1 config = length lo * length hi
   where (_,_,history) = last $ take 1001 $ iterate (stabilize config) (buildMemory config, [], [])
         (lo, hi) = let low (_,v,_) = v in partition low history
 
+findCycle :: Eq a => [a] -> ([a],[a])
+findCycle xxs = fCycle xxs xxs
+  where fCycle (x:xs) (_:y:ys)
+         | x == y              = fStart xxs xs
+         | otherwise           = fCycle xs ys
+        fCycle _      _        = (xxs,[]) -- not cyclic
+        fStart (x:xs) (y:ys)
+         | x == y              = ([], x:fLength x xs)
+         | otherwise           = let (as,bs) = fStart xs ys in (x:as,bs)
+        fLength x (y:ys)
+         | x == y              = []
+         | otherwise           = y:fLength x ys
+
 main = do
     config <- M.fromList . fromJust . parseMaybe (sepBy1 wire (string "\n")) <$> readFile "day20.txt"
-    print $ part1 config
+    -- print $ part1 config
+    let subKeys = S.fromList ["jz","dj","ht","jv","zs","dq","jc","xv","dx","fq","xz","zp","mm"]
+        states = iterate (stabilize' config) (buildMemory config, [], [])
+        subState (m,_,_) = M.restrictKeys m subKeys
+        (init,loop) = findCycle $ map subState states
+    -- print targets
+    print $ (length init, length loop)
 
 parseMaybe :: ReadP a -> String -> Maybe a
 parseMaybe parser input =
