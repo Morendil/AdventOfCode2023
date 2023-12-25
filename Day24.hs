@@ -1,12 +1,31 @@
-import Data.List.Extra (chunksOf)
+import Data.List.Extra (chunksOf, minimumOn, maximumOn)
+import Linear.V3
+import Linear.Metric
 import Test.Hspec
 
 type Stone = [[Integer]]
+data RStone = RStone {px::Integer,py::Integer,pz::Integer,vx::Integer,vy::Integer,vz::Integer}
+  deriving (Eq, Show)
+type VStone = (V3 Integer, V3 Integer)
 
 parse :: String -> Stone
 parse = chunksOf 3 . map read . words . map dePunct
     where dePunct c | c `elem` ",@" = ' '
           dePunct c = c
+
+asRec :: Stone -> RStone
+asRec [[px,py,pz],[vx,vy,vz]] = RStone {px,py,pz,vx,vy,vz}
+
+asVec :: Stone -> VStone
+asVec [[px,py,pz],[vx,vy,vz]] = (V3 px py pz, V3 vx vy vz)
+
+closest :: VStone -> VStone -> (V3 Double, V3 Double)
+closest (p1,d1) (p2,d2) = (c1, c2)
+  where n = cross d2 d1
+        n2 = cross d2 n
+        n1 = cross d1 n
+        c1 = fmap fromIntegral p1 + (fromIntegral (dot (p2 - p1) n2) / fromIntegral (dot d1 n2)) * fmap fromIntegral d1
+        c2 = fmap fromIntegral p2 + (fromIntegral (dot (p1 - p2) n1) / fromIntegral (dot d2 n1)) * fmap fromIntegral d2
 
 coeffs :: [[Integer]] -> (Integer,Integer,Integer)
 coeffs [[x,y,z],[vx,vy,vz]] = (vy,-vx,vx*y-vy*x)
@@ -37,8 +56,9 @@ part1 :: [Stone] -> Int
 part1 = length . filter id . crossWith (intersect (200000000000000,400000000000000))
 
 main = do
-    hail <- map parse . lines <$> readFile "day24.txt"
-    print $ part1 hail
+    hail <- map parse . lines <$> readFile "day24_sample.txt"
+    let vhail = map asVec hail
+    putStrLn $ crossWith closest vhail
 
 test = hspec $ do
   describe "Intersections" $ do
