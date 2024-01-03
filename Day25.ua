@@ -4,13 +4,13 @@
 
 Split ← ⊜□≠,
 Words ← ⊜□ ∊:+@a⇡26.
-WordMatrix ← ⬚(□ "   ")≡(Words ⊔)
+WordMatrix ← ⬚(□ "   ")≡(Words ⍘□)
 Label ← ⍜(♭)(↘ 1 ⊛ ⊂ □ "   ")
-Adjacencies ← ≡(⊂ :):¤⊙(⊏ ⊚ ≠ 0. ↘ 1)⊡ 0.
+Adjacencies ← ≡(⊂ :) :¤⊙(⊏ ⊚ ≠ 0. ↘ 1)⊡ 0.
 AllAdjacencies ← /⊐⊂ ≡(□Adjacencies)
 ToMatrix ← ⍘⊚-1
 TimesItself ← ≡(/+×)¤
-MakeSquare ← ⬚0↙⊟./↥△.
+MakeSquare ← ⬚0↙↥⇌.△.
 Undirect ← +⍉.
 
 # MergedArray AdjacencyMatrix -- MergedArray AdjacencyMatrix
@@ -24,22 +24,39 @@ RemoveCol ← ⍜⍉ RemoveRow
 ReplaceRow ← ⍜⊡ ; ⊙(:) ⊢
 # Array ArrayOfRows -- Array MergedRow
 MergeRows ← /+ ⊡ ≡(¤) ⊙(.)
-# AdjacencyMatrix VertexSet CutOfPhase -- AdjacencyMatrix VertexSet' CutOfPhase'
-WeightsFromVertexSet ← ⊙(/+⊏).⊙(.)
-RemoveVertexSet ← ⊙(⍜⊡ (×0) ≡(¤)).
-TightAndCut ← ⊙(⊃(⊢ ⇌ ⍏)(⊏ ⊢ ⇌ ⍏ .))
-MinCutPhaseStep ← : ⊂ TightAndCut RemoveVertexSet WeightsFromVertexSet ;
+
+# WeightsFromVertexSet ← |3 /+⋅⊏ # slow version: use whole vertex set
+WeightsFromVertexSet ← |3 +⊙(⊡⊢⇌) # fast version: add only latest vertex
+# RemoveVertexSet ← ⊙(⍜⊡ (×0) ≡(¤)). # slow: fix and pick
+RemoveVertexSet ← ⊙(⍜⊏ (×0)). # fast: select
+# TightAndCut ← ⊙(⊃(⊢ ⇌ ⍏)(⊏ ⊢ ⇌ ⍏ .)) # slow: sort twice
+TightAndCut ← ⊙(⊃∘⊡ ⊢⇌⍏.) # fast: sort once
+MinCutPhaseStep ← (
+  ⊙;
+  # weightsacc vertexset adjmatrix
+  ⊃(.WeightsFromVertexSet|⋅⊙∘)
+  # weightsacc' weights vertexset adjmatrix
+  ⊙(: ⊂ TightAndCut RemoveVertexSet :)
+)
 # Without the CutOfPhase:
 # MinCutPhaseStep ← ⊂ ⊙(⊢ ⇌ ⍏ ⍜⊡ (×0) ≡(¤)). ⊙(/+⊏).⊙(.)
 ZeroDiagonal ← ∧(⍜⊡ (×0)⊟.)⇡ ⧻ .
 MergeTwo ← ⊙(RemoveRow ⊢ ⇌) . ⊙(ReplaceRow) . ⊙(MergeRows) .
 PerformMerge ← ⊙(ZeroDiagonal) ⊙(⍉) MergeTwo ⊙(⍉) MergeTwo
 MinCutPhaseFinish ← ⊙(RememberMerged PerformMerge LastTwoVertices)
-MinCutPhaseInit ← ⊙(0 [0]) - 1 ⧻ .
+MinCutPhaseInit ← ⊙(0 [0]) ⊃(-1⧻)∘
+MinCutPhaseInit ← ⊃(-1⧻|▽:0 ⧻|0 [0]|∘)
 # Merges AdjacencyMatrix -- Merges' AdjacencyMatrix' CutOfPhase
-MinCutPhase ← MinCutPhaseFinish ⍥(MinCutPhaseStep) MinCutPhaseInit
+MinCutPhase ← MinCutPhaseFinish ; ⍥(MinCutPhaseStep) MinCutPhaseInit
 # MinMerges MinCut Merges AdjacencyMatrix Cut -- MinMerges' MinCut' Merges AdjacencyMatrix
-CompareToRecord ← ⊙(⊙((;;|⊙⊙(;;))⊙(:)) : ⊙(.) : ⊙(<:,,):):
+CompareToRecord ← ⊃(
+  ⋅⊙∘ # keep AdjacencyMatrix & Merges
+| ⊃(
+    >⊙⋅⋅∘ # compare Cut to MinCut
+  | ⊙⋅⊙⊙∘ # drop AdjacencyMatrix
+  )
+  (⋅⋅⊙∘|⊙∘) # keep MinCut & MinMerges, or copy Cut & Merges
+)
 
 # Merge -- Array of merge sizes
 CountPartitions ← ∧(;MergeTwo)⊙(⬚1 ↯ : [] ¤.)⇌↘ 1
@@ -65,19 +82,24 @@ StoerFirstMerge ← [
   0_0_2_0_0_3_0]
 ⍤ ⊃⋅∘ ≍ StoerFirstMerge ; PerformMerge 4_0 StoerOriginal
 
-&fras "day25_sample.txt"
-Split @\n
-AdjacencyMatrix
-⧻ .
-# Keep length way up the stack for last phase
-⊙(:).
-⊙⊙([]∞[])
--2
-⍥(CompareToRecord MinCutPhase)
-# Discard last matrix, last merge, and min cut value; keep min-cut merge
-;;;
-CountPartitions
-# Get the max
-/↥
-# Subtract from total count and multiply together
-× ⊙(-) .
+PartOne ← (
+  Split @\n
+  AdjacencyMatrix
+  ⧻ .
+  # Keep length way up the stack for last phase
+  ⊙(:).
+  ⊙⊙([]∞[])
+  -2
+  ⍥(CompareToRecord MinCutPhase)
+  # Discard last matrix, last merge, and min cut value; keep min-cut merge
+  ;;
+  ⍤"min cut should be 3"=3
+  CountPartitions
+  # Get the max
+  /↥
+  # Subtract from total count and multiply together
+  × ⊃∘-
+)
+
+&fras "day25.txt"
+PartOne
