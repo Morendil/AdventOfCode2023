@@ -7,10 +7,10 @@ Words ← ⊜□ ∊:+@a⇡26.
 WordMatrix ← ⬚(□ "   ")≡(Words ⊔)
 Label ← ⍜(♭)(↘ 1 ⊛ ⊂ □ "   ")
 Adjacencies ← ≡(⊂ :):¤⊙(⊏ ⊚ ≠ 0. ↘ 1)⊡ 0.
-AllAdjacencies ← ⊐(/⊂ ≡(Adjacencies))
+AllAdjacencies ← /⊐⊂ ≡(□Adjacencies)
 ToMatrix ← ⍘⊚-1
 TimesItself ← ≡(/+×)¤
-MakeSquare ← ⬚0+↯:0⊂.⊢△.
+MakeSquare ← ⬚0↙⊟./↥△.
 Undirect ← +⍉.
 
 # MergedArray AdjacencyMatrix -- MergedArray AdjacencyMatrix
@@ -54,8 +54,7 @@ StoerOriginal ← Undirect [
   0_0_0_0_0_3_0_0
   0_0_0_0_0_0_1_0
   0_0_0_0_0_0_0_3
-  0_0_0_0_0_0_0_0
-]
+  0_0_0_0_0_0_0_0]
 StoerFirstMerge ← [
   0_3_0_4_2_0_0
   3_0_4_0_0_2_0
@@ -63,8 +62,7 @@ StoerFirstMerge ← [
   4_0_0_0_3_0_0
   2_0_0_3_0_1_0
   0_2_2_0_1_0_3
-  0_0_2_0_0_3_0
-]
+  0_0_2_0_0_3_0]
 ⍤ ⊃⋅∘ ≍ StoerFirstMerge ; PerformMerge 4_0 StoerOriginal
 
 &fras "day25_sample.txt"
@@ -75,11 +73,11 @@ AdjacencyMatrix
 ⊙(:).
 ⊙⊙([]∞[])
 -2
-⍥(dump△ CompareToRecord MinCutPhase)
+⍥(CompareToRecord MinCutPhase)
 # Discard last matrix, last merge, and min cut value; keep min-cut merge
 ;;;
 CountPartitions
 # Get the max
-⊏⊢⇌⍏.
+/↥
 # Subtract from total count and multiply together
 × ⊙(-) .
