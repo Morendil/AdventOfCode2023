@@ -1,13 +1,13 @@
 Split ← ⊜□≠,
-Get ← (0|parse ⊔ ⊢ Split @ )/+⌕ ⊙.
+Get ← (0|⋕ °□ ⊢ Split @ )/+⌕ ⊙.
 Possible ← = 1 ¬ /+≡(/+ > 12_13_14)
-Lookup ← /+≡(Get ⊙⊔) ¤
-Sample ← ≡(Lookup ⊔){"red" "green" "blue"} ¤ Split @,
-Game ← ≡(Sample ⊔) Split @; ⊔⊢⇌ Split @:
+Lookup ← /+≡(Get ⊙°□) ¤
+Sample ← ≡(Lookup °□){"red" "green" "blue"} ¤ Split @,
+Game ← ≡(Sample °□) Split @; °□⊢⇌ Split @:
 Power ← /×/↥
 
-PartOne ← /+ +1 ⊚ ≡(Possible Game ⊔)
-PartTwo ← /+≡(Power Game ⊔)
+PartOne ← /+ +1 ⊚ ≡(Possible Game °□)
+PartTwo ← /+≡(Power Game °□)
 
 # Domain (part 1)
 ⍤ ⊃⋅∘ ≍ 1 Possible [6_3_1 1_2_2]
