@@ -1,18 +1,18 @@
 Digits ← {"zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"}
 📜 ← ⊜□≠@\n.
 👆 ← ∊:+@0⇡10
-ParseFirstAndLast ← parse⊟⊃⊢(⊢⇌)
+ParseFirstAndLast ← ⋕⊟⊃⊢(⊢⇌)
 Nip ← ;:
 🛏️ ← ⬚@_ ↙ Nip ⧻.
 Tails ← ≡(□ ↘) ⊙¤ ⇡ ⧻ .
 IsPrefix ← ≍ ⊃∘🛏️
-StartsWithWhichDigit ← (⊗ 1 ≡(IsPrefix ⊔) Digits ¤|parse ↙ 1)👆⊢.
+StartsWithWhichDigit ← (⊗ 1 ≡(IsPrefix °□) Digits ¤|⋕ ↙ 1)👆⊢.
 
 PartOneDigits ← ▽👆.
-PartTwoDigits ← +@0 ▽ <10 . ≡(StartsWithWhichDigit ⊔) Tails
+PartTwoDigits ← +@0 ▽ <10 . ≡(StartsWithWhichDigit °□) Tails
 
-PartOne ← /+ ≡(ParseFirstAndLast PartOneDigits ⊔)
-PartTwo ← /+ ≡(ParseFirstAndLast PartTwoDigits ⊔)
+PartOne ← /+ ≡(ParseFirstAndLast PartOneDigits °□)
+PartTwo ← /+ ≡(ParseFirstAndLast PartTwoDigits °□)
 
 $ 1abc2
 $ pqr3stu8vwx
@@ -24,7 +24,7 @@ $ treb7uchet
 👆
 ;
 $ 1abc2
-parse▽👆.
+⋕▽👆.
 ;
 $ 1abc2
 PartOneDigits
