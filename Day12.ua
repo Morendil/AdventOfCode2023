@@ -1,7 +1,7 @@
 Lines ← ⊜□ ≠@\n.
-Words ← ⊜□ ≠@\s.⊔
-Numbers ← ⊜parse ≠@,.
-Prepare ← ≡(⊔) ⊙(≡(parse ⊔)) ⍘⊟ ⍉
+Words ← ⊜□ ≠@\s.°□
+Numbers ← ⊜⋕ ≠@,.
+Prepare ← ≡(°□) ⊙(≡(⋕ °□)) °⊟ ⍉
 
 # Cells in the state space are represented as four integers:
 # - 0 = Working, 1 = Broken;
@@ -50,15 +50,15 @@ Arrangements ← (
   # Prepare the stack for folding and rowing
   ⊙(¤ ¤ : ¤ Initial .)
   # Compute final state
-  ∧(Cut Merge ⊔ /⊐⊂ ≡(□ Cut Switch) ⊙:)
+  ∧(Cut Merge °□ /⊐⊂ ≡(□ Cut Switch) ⊙:)
   # Cut off any states where there are broken springs to match
   Finish
 )
 
-Expand ← ⊓(⊂: ⊙(⊔)⊐/⊂⊙(□)≡(□⊂@?)[⍥.3].)(/⊂[⍥.4])
+Expand ← ⊓(⊂: ⊙(°□)⊐/⊂⊙(□)≡(□⊂@?)[⍥.3].)(/⊂[⍥.4])
 
-PartOne ← /+ ≡(Arrangements ∩⊔ ⍘⊟ ⍜(⊡ 1)(⍜(⊔)Numbers)Words) Lines
-PartTwo ← /+ ≡(Arrangements Expand ∩⊔ ⍘⊟ ⍜(⊡ 1)(⍜(⊔)Numbers)Words) Lines
+PartOne ← /+ ≡(Arrangements ∩°□ °⊟ ⍜(⊡ 1)(⍜(°□)Numbers)Words) Lines
+PartTwo ← /+ ≡(Arrangements Expand ∩°□ °⊟ ⍜(⊡ 1)(⍜(°□)Numbers)Words) Lines
 
 ⍤ ⊃⋅∘ ≍ 0 Case @# [Working 0 0 1]
 ⍤ ⊃⋅∘ ≍ 1 Case @? [Working 1 0 1]
