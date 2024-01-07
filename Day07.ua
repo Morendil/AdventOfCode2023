@@ -1,10 +1,10 @@
 Lines ← ⊜□ ≠@\n.
-Words ← ⊜□ ≠@\s.⊔
-Prepare ← ≡(⊔) ⊙(≡(parse ⊔)) ⍘⊟ ⍉
+Words ← ⊜□ ≠@\s.°□
+Prepare ← ≡(°□) ⊙(≡(⋕ °□)) °⊟ ⍉
 CardValue ← ⊗ : "23456789TJQKA"
 JokerCardValue ← ⊗ : "J23456789TQKA"
 HandType ← ⇌ ⊏ ⍏ . ⊕⧻ . ⊛ ⊏ ⍏ .
-JokerHandType ← ⬚0 + ¤ ⧻ : ⊙(([]|⊔ ⊡ 1)-1 ⧻.) HandType⊔⊢. ⊕□ = @J.
+JokerHandType ← ⬚0 + ¤ ⧻ : ⊙(([]|°□ ⊡ 1)-1 ⧻.) HandType°□⊢. ⊕□ = @J.
 SortBidsByHandValues ← ⊏⍏
 Ranks ← +1 ⇡ ⧻
 Winnings ← /+×
