@@ -1,8 +1,8 @@
 Split ← ⊜□≠,
-SplitOn ← ⊐⊜∘ ¬ ⌕ : ,
-NumArray ← ≡(parse ⊔) Split @\s
-ParseMaps ← ≡(□ ≡(NumArray ⊔) Split @\n ⊔)
-Prepare ← : ⊙(↘ 1) ↙ 1 . ≡(⊡ 1 Split @: ⊔) SplitOn "\n\n"
+SplitOn ← ⊜□ ¬ ⌕
+NumArray ← ≡(⋕ °□) Split @\s
+ParseMaps ← ≡(□ ≡(NumArray °□) Split @\n °□)
+Prepare ← : ⊙(↘ 1) ↙ 1 . ≡(⊡ 1 Split @: °□) SplitOn "\n\n" .
 PairSeeds ← ↯ ⊂ : 2 ÷2⧻.
 MakePairs ← ≡(⊂:1)
 
@@ -23,7 +23,7 @@ Step 52_50_48 [79_14 50_2] []
 ⍤ ⊃⋅∘ ≍ ↯ 0_2 []
 ⍤ ⊃⋅∘ ≍ [81_14 52_2]
 
-Generic! ← ⊡ 0_0 ⊏ ⍏. ; : ∧(Reset ∧(Step) ⊔) ⊙(: []) ^2.2 ParseMaps ⊙(NumArray ⊔ ⊡ 0) Prepare
+Generic! ← ⊡ 0_0 ⊏ ⍏. ; : ∧(Reset ∧(Step) °□) ⊙(: []) ^2.2 ParseMaps ⊙(NumArray °□ ⊡ 0) Prepare
 PartOne ← Generic!⊙(MakePairs)
 PartTwo ← Generic!⊙(PairSeeds)
 
